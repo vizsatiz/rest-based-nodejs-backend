@@ -1,0 +1,25 @@
+{
+  "name": "node-token-based-auth",
+  "version": "1.0.0",
+  "description": "This project is was developed as a backend for helpearn app by the company Cyrus",
+  "main": "rest-server.js",
+  "scripts": {
+    "test": "start test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://vizsatiz@bitbucket.org/vizsatiz/rest-server-token-auth.git"
+  },
+  "keywords": [
+    "Rest",
+    "Backend"
+  ],
+  "author": "vizsatiz",
+  "license": "GNU",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.4",
+    "jwt-simple": "^0.4.1",
+    "morgan": "^1.6.1"
+  }
+}
