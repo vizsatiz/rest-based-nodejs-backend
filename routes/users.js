@@ -1,8 +1,14 @@
+// if our user.js file is at app/models/user.js
+var User = require('../models/usermodel.js');
 var users = {
  
   getAll: function(req, res) {
+    User.find({}, function(err, users) {
+      if (err) throw err;
+      res.json(users);
+    });
     var allusers = data; // Spoof a DB call
-    res.json(allusers);
+    //res.json(allusers);
   },
  
   getOne: function(req, res) {

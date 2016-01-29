@@ -2,8 +2,19 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
  
 var app = express();
+var moptions = {
+      "user" : "vizsatiz",
+      "pass" : "Kony@123",
+      "server": {
+        "socketOptions": {
+          "keepAlive": 1
+        }
+      }
+};
+mongoose.connect('mongodb://ds051625.mongolab.com:51625/vizsandboxdb',moptions);
  
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -20,6 +31,8 @@ app.all('/*', function(req, res, next) {
     next();
   }
 });
+
+
  
 // Auth Middleware - This will check if the token is valid
 // Only the requests that start with /api/v1/* will be checked for the token.
@@ -27,15 +40,13 @@ app.all('/*', function(req, res, next) {
 // are sure that authentication is not needed
 app.all('/api/v1/*', [require('./middlewares/validateRequest')]);
  
-app.use('/', require('./routes'));
- 
+app.use('/', require('./routes')); 
 // If no route is matched by now, it must be a 404
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
-});
- 
+}); 
 // Start the server
 app.set('port', process.env.PORT || 3000);
  
