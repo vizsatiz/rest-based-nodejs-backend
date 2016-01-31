@@ -3,18 +3,11 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var serverconfig =  require('./config/serverconfig.js');
  
 var app = express();
-var moptions = {
-      "user" : "vizsatiz",
-      "pass" : "Kony@123",
-      "server": {
-        "socketOptions": {
-          "keepAlive": 1
-        }
-      }
-};
-mongoose.connect('mongodb://ds051625.mongolab.com:51625/vizsandboxdb',moptions);
+
+mongoose.connect(serverconfig.mongourl,serverconfig.mongooptions);
  
 app.use(logger('dev'));
 app.use(bodyParser.json());

@@ -50,6 +50,7 @@ module.exports = function(req, res, next) {
       }
  
     } catch (err) {
+      throw err;
       res.status(500);
       res.json({
         "status": 500,

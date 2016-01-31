@@ -12,7 +12,6 @@ var userSchema = new Schema({
   location: String,
   meta: {
     rating: Number,
-    review : String,
     facebooktoken: String
   },
   created_at: Date,
