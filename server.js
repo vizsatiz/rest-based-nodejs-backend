@@ -11,6 +11,7 @@ mongoose.connect(serverconfig.mongourl,serverconfig.mongooptions);
  
 app.use(logger('dev'));
 app.use(bodyParser.json());
+
  
 app.all('/*', function(req, res, next) {
   // CORS headers

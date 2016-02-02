@@ -1,45 +1,73 @@
-var products = {
+// if our user.js file is at app/models/user.js
+var Tasks = require('../models/taskmodel.js');
+
+var tasks = {
  
   getAll: function(req, res) {
-    var allProducts = data; // Spoof a DB call
-    res.json(allProducts);
+    Tasks.find({}, function(err, tasks) {
+      if (err) throw err;
+      res.json(tasks);
+    });
   },
  
   getOne: function(req, res) {
     var id = req.params.id;
-    var product = data[0]; // Spoof a DB call
-    res.json(product);
+    Tasks.findOne({_id:id}).populate("owner").exec(function(err, users) {
+      if (err) throw err;
+      res.json(users);
+    });
   },
  
   create: function(req, res) {
-    var newProduct = req.body;
-    data.push(newProduct); // Spoof a DB call
-    res.json(newProduct);
+    var newtask = req.body;
+    if(newtask.title == undefined || newtask.reward == undefined || newtask.expiry == undefined){
+        res.status(302);
+        res.json({
+            "status": 302,
+            "message": "Invalid payload"
+        });
+    }
+    var newTask = Tasks({
+      title: newtask.title,
+      description: newtask.description,
+      location: newtask.location,
+      owner: newtask.owner,
+      reward: newtask.reward,
+      expiry:newtask.expiry,
+    });
+    // save the user
+    newTask.save(function(err) {
+      if (err) throw err;
+      res.json({"id" : newTask.id });
+    });
   },
  
   update: function(req, res) {
-    var updateProduct = req.body;
+    var updateTask = req.body;
     var id = req.params.id;
-    data[id] = updateProduct // Spoof a DB call
-    res.json(updateProduct);
+    Tasks.findById(id, function(err, task) {
+      if (err) throw err;
+      task.title =  updateTask.title;
+      task.description = updateTask.description;
+      task.location = updateTask.location;
+      task.owner = updateTask.owner;
+      task.reward = updateTask.reward;
+      task.expiry = updateTask.expiry; 
+      task.save(function(err) {
+        if (err) throw err;
+        res.send({"updated" : task.id});
+      });
+    });
   },
  
   delete: function(req, res) {
     var id = req.params.id;
-    data.splice(id, 1) // Spoof a DB call
-    res.json(true);
+    Tasks.findByIdAndRemove(id, function(err) {
+      if (err) throw err;
+      // we have deleted the task
+      res.send({"deleted" : id});
+    });
   }
 };
  
-var data = [{
-  name: 'product 1',
-  id: '1'
-}, {
-  name: 'product 2',
-  id: '2'
-}, {
-  name: 'product 3',
-  id: '3'
-}];
- 
-module.exports = products;
+module.exports = tasks;

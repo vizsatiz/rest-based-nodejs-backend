@@ -19,21 +19,37 @@ var users = {
  
   create: function(req, res) {
     var newuser = req.body;
+    // validate payload
+    if(newuser.name == undefined || newuser.username == undefined || newuser.password == undefined){
+      res.status(302);
+      res.json({
+          "status": 302,
+          "message": "Invalid payload"
+      });
+    }
     // create a new user
     var newUser = User({
       name: newuser.name,
       username: newuser.username,
       password: newuser.password,
-      admin: true,
-      location: newuser.location,
-      meta:newuser.meta
+      admin: false,
     });
-    // save the user
-    newUser.save(function(err) {
-      if (err) throw err;
-      console.log("New user created : "+ newUser);
-      res.json({"id" : newUser.id });
-    });
+    // Check whether the user already exists
+    User.find({username : newuser.username},function(err,user){
+      if(user.length != 0){
+        res.status(302);
+        res.json({
+          "status": 302,
+          "message": "Cannot create duplicate user"
+        });
+      }else{
+        // save the user
+        newUser.save(function(err) {
+          if (err) throw err;
+          res.json({"id" : newUser.id });
+        });
+      }  
+    });      
   },
  
   update: function(req, res) {
@@ -41,11 +57,9 @@ var users = {
     var id = req.params.id;
     User.findById(id, function(err, user) {
       if (err) throw err;
-      user.name =  updateuser.name,
-      user.username = updateuser.username,
-      user.password = updateuser.password,
-      user.location = updateuser.location,
-      user.meta = updateuser.meta
+      user.name =  updateuser.name;
+      user.username = updateuser.username;
+      user.password = updateuser.password;
       user.save(function(err) {
         if (err) throw err;
         res.send({"updated" : user.id});

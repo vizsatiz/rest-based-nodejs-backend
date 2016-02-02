@@ -10,6 +10,10 @@ var serversettings = {
       }
 	},
 	// Mongo url
-	mongourl : "mongodb://localhost:27017/sandboxdb1"
+	mongourl : "mongodb://localhost:27017/sandboxdb1",
+  basicauth : {
+      username : "basicauth",
+      password : "basicauth"
+  }
 }
 module.exports = serversettings;
