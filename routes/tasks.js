@@ -4,15 +4,21 @@ var Tasks = require('../models/taskmodel.js');
 var tasks = {
  
   getAll: function(req, res) {
-    Tasks.find({}, function(err, tasks) {
+    Tasks.find({}).lean().populate("owner").populate("bids").exec(function(err, tasks) {
       if (err) throw err;
-      res.json(tasks);
+      var options = {
+        path : 'bids.bidder',
+        model : 'User'
+      }
+    Tasks.populate(tasks,options,function(err,tasks){
+        res.json(tasks);
+      });      
     });
   },
  
   getOne: function(req, res) {
     var id = req.params.id;
-    Tasks.findOne({_id:id}).populate("owner").exec(function(err, users) {
+    Tasks.findOne({_id:id}).populate("owner").populate("bids").exec(function(err, users) {
       if (err) throw err;
       res.json(users);
     });
@@ -28,12 +34,15 @@ var tasks = {
         });
     }
     var newTask = Tasks({
+
       title: newtask.title,
       description: newtask.description,
       location: newtask.location,
       owner: newtask.owner,
       reward: newtask.reward,
       expiry:newtask.expiry,
+      bids:[]
+
     });
     // save the user
     newTask.save(function(err) {

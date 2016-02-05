@@ -5,7 +5,6 @@ var User = require('../models/usermodel.js');
 var auth = {
  
   login: function(req, res) {
- 
     var username = req.body.username || '';
     var password = req.body.password || '';
    
@@ -17,48 +16,32 @@ var auth = {
       });
       return;
     }
- 
-    // Fire a query to your DB and check if the credentials are valid
-    var dbUserObj = auth.validate(username);
-   
-    if (!dbUserObj) { // If authentication fails, we send a 401 back
-      res.status(401);
-      res.json({
-        "status": 401,
-        "message": "Invalid credentials"
-      });
-      return;
-    }
- 
-    if (dbUserObj) {
- 
+    User.find({username : username}).lean().exec(function(err,user){
+      if(user.length == 0){
+        res.status(401);
+        res.json({
+          "status": 401,
+          "message": "Invalid credentials"
+        });
+        return;
+      }
+      console.log("user object : "+ JSON.stringify(user));
+      console.log("user name : "+ user[0].username);
       // If authentication is success, we will generate a token
       // and dispatch it to the client
-      var passwordVerifiaction = passwordHash.verify(password,dbUserObj.password);
-      if(passwordVerifiaction && dbUserObj.username == username){
-        res.json(genToken(dbUserObj));    
+      var passwordVerifiaction = passwordHash.verify(password,user[0].password);
+      if(passwordVerifiaction && user[0].username == username){
+        user[0].password = "xxx";
+        res.json(genToken(user));    
       }else{
+        res.status(401);
         res.json({
-        "status": 401,
-        "message": "Invalid credentials"
-      });
-      }  
-    }
- 
-  },
- 
-  validate: function(_username) {
-    User.find({username : _username},function(err,user){
-      if(user.length == 0){
-        return undefined;
-      }else{
-        return {
-          username: user.username,
-          password: user.password
-        };
+           "status": 401,
+           "message": "Invalid credentials"
+        });
       }
     });
-  }
+  },
 }
  
 // private method

@@ -4,6 +4,7 @@ var router = express.Router();
 var auth = require('./auth.js');
 var tasks = require('./tasks.js');
 var user = require('./users.js');
+var bids = require('./bids.js');
 var config = require('../config/serverconfig.js');
 var basicAuth = require('../middlewares/basicauth.js');
 
@@ -23,7 +24,14 @@ router.get('/api/v1/task/:id', tasks.getOne);
 router.post('/api/v1/task/', tasks.create);
 router.put('/api/v1/task/:id', tasks.update);
 router.delete('/api/v1/task/:id', tasks.delete);
- 
+
+// Bids Apis
+
+router.get('/api/v1/bids',bids.getAll);
+router.get('/api/v1/bids/:id',bids.getOne);
+router.post('/api/v1/bids',bids.create);
+router.put('/api/v1/bids/:id',bids.update);
+router.delete('/api/v1/bids/:id',bids.delete);
 /*
  * Routes that can be accessed only by authenticated & authorized users
  */

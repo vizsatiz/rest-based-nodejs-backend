@@ -1,5 +1,6 @@
 // if our user.js file is at app/models/user.js
 var Bid = require('../models/bidmodel.js');
+var Tasks = require('../models/taskmodel.js');
 
 var bids = { 
 
@@ -12,7 +13,7 @@ var bids = {
  
   getOne: function(req, res) {
     var id = req.params.id;
-    Bid.findById(id, function(err, bids) {
+    Bid.findById(id).populate("task").populate("bidder").exec(function(err, bids) {
       if (err) throw err;
       res.json(bids);
     });
@@ -21,16 +22,36 @@ var bids = {
   create: function(req, res) {
     var newbid = req.body;
     // create a new review
+    if(newbid.bidder == undefined || newbid.amount == undefined || newbid.task == undefined){
+      res.status(302);
+      res.json({
+          "status": 302,
+          "message": "Invalid payload"
+      });
+    }
     var newBid = Bid({
-      bidder: newbid.bidder,
       task: newbid.task,
+      bidder: newbid.bidder,
       amount:newbid.amount
     });
-    // save the review
-    newBid.save(function(err) {
-      if (err) throw err;
-      res.json({"id" : newBid.id });
-    });
+    Tasks.findById(newBid.task, function(err, task) {
+        if(err){
+          res.status(302);
+          res.json({
+              "status": 302,
+              "message": "Invalid payload : Task doesn't exist"
+          });
+        }else{
+          newBid.save(function(err) {
+            if (err) throw err;
+            task.bids.push(newBid.id);
+            task.save(function(err) {
+              if (err) throw err;
+              res.json({"id" : newBid.id});
+            });            
+          });
+        }
+    }); 
   },
  
   update: function(req, res) {
@@ -38,9 +59,8 @@ var bids = {
     var id = req.params.id;
     Bid.findById(id, function(err, bid) {
       if (err) throw err;
-
+      bid.task = task;
       bid.bidder =  updatebid.bidder;
-      bid.task = updatebid.task;
       bid.amount = updatebid.amount;
 
       bid.save(function(err) {
@@ -61,4 +81,4 @@ var bids = {
   }
 }; 
 
-module.exports = reviews;
+module.exports = bids;

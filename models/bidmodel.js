@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
+var ObjectId = Schema.ObjectId;
 
 // create a schema
 var bidSchema = new Schema({
 	
   bidder: {type: ObjectId, ref: 'User'},
-  task: {type: ObjectId, ref: 'Task'},
+  task: { type:ObjectId ,ref: 'Task'},
   amount: Number,
   created_at: Date,
   updated_at: Date

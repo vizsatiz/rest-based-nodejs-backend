@@ -12,6 +12,7 @@ var taskSchema = new Schema({
   owner: {type: ObjectId, ref: 'User'},
   reward: Number,
   expiry: Date,
+  bids: [{type: ObjectId, ref: 'Bids'}],
   created_at: Date,
   updated_at: Date
   

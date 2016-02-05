@@ -18,6 +18,7 @@ var users = {
   },
  
   create: function(req, res) {
+    console.log("Request Body : "+ JSON.stringify(req.body));
     var newuser = req.body;
     // validate payload
     if(newuser.name == undefined || newuser.username == undefined || newuser.password == undefined){
@@ -26,16 +27,21 @@ var users = {
           "status": 302,
           "message": "Invalid payload"
       });
+      return;
     }
+    //56b455cde508f2ed10f3c222
+    if(!newuser.admin)
+        newuser.admin = false;
     // create a new user
     var newUser = User({
       name: newuser.name,
       username: newuser.username,
       password: newuser.password,
-      admin: false,
+      admin: newuser.admin,
     });
+    console.log(JSON.stringify(newuser));
     // Check whether the user already exists
-    User.find({username : newuser.username},function(err,user){
+    User.find({username : newUser.username},function(err,user){
       if(user.length != 0){
         res.status(302);
         res.json({
