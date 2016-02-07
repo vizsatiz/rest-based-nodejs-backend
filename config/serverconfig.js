@@ -14,6 +14,10 @@ var serversettings = {
   basicauth : {
       username : "basicauth",
       password : "basicauth"
+  },
+  encryption : {
+      algorithm : "aes-256-ctr",
+      key : "d6F3Efeq"
   }
 }
 module.exports = serversettings;
