@@ -4,8 +4,6 @@ var basicAuth = {
 
 	basicauth : function(req,res,next){
 		var auth;
-		console.log("baic Auth Failed :"+JSON.stringify(req.headers));
-		console.log("baic Auth Failed :"+JSON.stringify(req.body));
     	// check whether an autorization header was send    
 	    if (req.headers.authorization) {
 	      // only accepting basic auth, so:
@@ -20,7 +18,7 @@ var basicAuth = {
 	    // * first value matches the expected user 
 	    // * second value the expected password
 	    if (!auth || auth[0] !== config.basicauth.username || auth[1] !== config.basicauth.password) {
-	    	
+	    	console.log("basic Auth Failed : -->");
 	        // any of the tests failed
 	        // send an Basic Auth request (HTTP Code: 401 Unauthorized)
 	        res.statusCode = 401;

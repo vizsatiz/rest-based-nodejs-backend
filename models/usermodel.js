@@ -24,7 +24,7 @@ userSchema.pre('save', function(next) {
   this.updated_at = currentDate;
 
   //hashing password
-  this.password = passwordHash.generate(this.password);
+  //this.password = passwordHash.generate(this.password);
 
   // if created_at doesn't exist, add to that field
   if (!this.created_at)

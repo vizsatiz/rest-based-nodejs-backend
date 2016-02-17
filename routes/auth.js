@@ -27,10 +27,13 @@ var auth = {
       }
       console.log("user object : "+ JSON.stringify(user));
       console.log("user name : "+ user[0].username);
+      console.log("user name : "+ password);
+      console.log("user name : "+ user[0].password);
       // If authentication is success, we will generate a token
       // and dispatch it to the client
-      var passwordVerifiaction = passwordHash.verify(password,user[0].password);
-      if(passwordVerifiaction && user[0].username == username){
+      var passwordVerification = (password == user[0].password);
+      console.log("p a s w :"+ passwordVerification);
+      if(passwordVerification && user[0].username == username){
         user[0].password = "xxx";
         res.json(genToken(user));    
       }else{
