@@ -13,7 +13,7 @@ var basicAuth = require('../middlewares/basicauth.js');
  */
  // creating a user or registering
 router.post('/register/user',basicAuth.basicauth,user.create);
-// Authenticate
+router.get('/register/user/:username',basicAuth.basicauth,user.getUserByName);// Authenticate
 router.post('/authenticate',basicAuth.basicauth,auth.login);
 
 /*

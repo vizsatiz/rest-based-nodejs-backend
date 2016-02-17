@@ -2,6 +2,15 @@
 var User = require('../models/usermodel.js');
 
 var users = { 
+
+  getUserByName : function(req,res){
+    var _username = req.params.username;
+    User.find({username : _username}, function(err, user) {
+      if (err) throw err;
+      res.json(user);
+    });
+  },
+
   getAll: function(req, res) {
     User.find({}, function(err, users) {
       if (err) throw err;

@@ -26,7 +26,6 @@ module.exports = function(req, res, next) {
         });
         return;
       }
-      console.log("Key -- >"+ key);
       // Authorize the user to see if s/he can access our resources
       User.find({username : key}).lean().exec(function(err,dbUser){
         if(!dbUser){
@@ -38,7 +37,6 @@ module.exports = function(req, res, next) {
           });
           return;
         }else{
-          console.log("Role -->" + dbUser[0].admin);
           if ((req.url.indexOf('admin') >= 0 && dbUser[0].admin) || (req.url.indexOf('admin') < 0 && req.url.indexOf('/api/v1/') >= 0)) {
             next(); // To move to next middleware
           } else {

@@ -41,6 +41,7 @@ var tasks = {
       owner: newtask.owner,
       reward: newtask.reward,
       expiry:newtask.expiry,
+      facebook: newtask.facebook,
       bids:[]
 
     });
