@@ -13,7 +13,7 @@ var taskSchema = new Schema({
   reward: Number,
   expiry: Date,
   bids: [{type: ObjectId, ref: 'Bids'}],
-  facebook : String,
+  promotes: [{type: ObjectId, ref: 'User'}],
   created_at: Date,
   updated_at: Date
   

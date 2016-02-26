@@ -46,6 +46,7 @@ var users = {
       name: newuser.name,
       username: newuser.username,
       password: newuser.password,
+      facebook: newuser.facebook,
       admin: newuser.admin,
     });
     console.log(JSON.stringify(newuser));

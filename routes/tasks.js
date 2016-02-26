@@ -23,15 +23,41 @@ var tasks = {
       res.json(users);
     });
   },
+
+  promote : function(req,res){
+     var body = req.body;
+     var id = req.params.id;
+     var promoter = body.promoter;
+     if(promoter == undefined){
+        res.status(302);
+        res.json({
+            "status": 302,
+            "message": "Invalid payload"
+        });
+        console.log("Error invalid payload :");
+        return;
+     }
+     Tasks.findById(id, function(err, task) {
+      if (err) throw err;
+      task.promotes.push(promoter);
+      task.save(function(err) {
+        if (err) throw err;
+        res.send({"promoted" : task.id});
+      });
+    });
+  },
  
   create: function(req, res) {
     var newtask = req.body;
+    console.log("payload : " + JSON.stringify(newtask));
     if(newtask.title == undefined || newtask.reward == undefined || newtask.expiry == undefined){
         res.status(302);
         res.json({
             "status": 302,
             "message": "Invalid payload"
         });
+        console.log("Error invalid payload :");
+        return;
     }
     var newTask = Tasks({
 
@@ -40,8 +66,8 @@ var tasks = {
       location: newtask.location,
       owner: newtask.owner,
       reward: newtask.reward,
+      promotes : [],
       expiry:newtask.expiry,
-      facebook: newtask.facebook,
       bids:[]
 
     });

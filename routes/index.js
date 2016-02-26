@@ -22,6 +22,7 @@ router.post('/authenticate',basicAuth.basicauth,auth.login);
 router.get('/api/v1/task', tasks.getAll);
 router.get('/api/v1/task/:id', tasks.getOne);
 router.post('/api/v1/task/', tasks.create);
+router.post('/api/v1/task/:id', tasks.promote);
 router.put('/api/v1/task/:id', tasks.update);
 router.delete('/api/v1/task/:id', tasks.delete);
 
