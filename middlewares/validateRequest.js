@@ -37,7 +37,7 @@ module.exports = function(req, res, next) {
           });
           return;
         }else{
-          if ((req.url.indexOf('admin') >= 0 && dbUser[0].admin) || (req.url.indexOf('admin') < 0 && req.url.indexOf('/api/v1/') >= 0)) {
+          if ((req.url.indexOf('admin') >= 0 && dbUser[0].admin) || (req.url.indexOf('admin') < 0 && (req.url.indexOf('/api/v1/') >= 0 || req.url.indexOf('/api/v2/') >= 0))) {
             next(); // To move to next middleware
           } else {
             res.status(403);

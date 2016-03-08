@@ -10,6 +10,7 @@ var userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   facebook: String,
+  gmctoken :String,
   admin: Boolean,
   created_at: Date,
   updated_at: Date

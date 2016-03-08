@@ -8,6 +8,7 @@ var bidSchema = new Schema({
   bidder: {type: ObjectId, ref: 'User'},
   task: { type:ObjectId ,ref: 'Task'},
   amount: Number,
+  bidstatus:Boolean,
   created_at: Date,
   updated_at: Date
   

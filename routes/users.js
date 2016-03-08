@@ -48,6 +48,7 @@ var users = {
       password: newuser.password,
       facebook: newuser.facebook,
       admin: newuser.admin,
+      gmstoken: null
     });
     console.log(JSON.stringify(newuser));
     // Check whether the user already exists
@@ -91,6 +92,20 @@ var users = {
       // we have deleted the user
       res.send({"deleted" : id});
     });
+  },
+
+  updateUserWithGCMToken : function(req,res){
+    var userId = req.params.id;
+    var gmc_token = req.body.gmctoken;
+    User.findById(userId, function(err, user){
+      if(err) throw err;
+      user.gmctoken = gmc_token;
+      user.save(function(err) {
+        if (err) throw err;
+        res.send({"updated" : user.id});
+      });
+    })
   }
+  
 }; 
 module.exports = users;

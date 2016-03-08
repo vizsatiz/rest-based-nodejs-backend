@@ -103,6 +103,20 @@ var tasks = {
       // we have deleted the task
       res.send({"deleted" : id});
     });
+  },
+
+  getTaskByUser: function(req,res){
+    var userId = req.params.userId;
+    Tasks.find({ owner : userId}).populate("bids").lean().exec(function(err, tasks){
+      if (err) throw err;
+      var options = {
+        path : 'bids.bidder',
+        model : 'User'
+      }
+      Tasks.populate(tasks,options,function(err,tasks){
+          res.json(tasks);
+      }); 
+    });         
   }
 };
  

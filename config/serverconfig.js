@@ -18,6 +18,7 @@ var serversettings = {
   encryption : {
       algorithm : "aes-256-ctr",
       key : "d6F3Efeq"
-  }
+  },
+  gmctoken : "https://gcm-http.googleapis.com/gcm/send"
 }
 module.exports = serversettings;

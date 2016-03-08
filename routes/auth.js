@@ -12,7 +12,7 @@ var auth = {
       res.status(401);
       res.json({
         "status": 401,
-        "message": "Invalid credentials"
+        "message": "Credentials not found"
       });
       return;
     }
@@ -21,18 +21,13 @@ var auth = {
         res.status(401);
         res.json({
           "status": 401,
-          "message": "Invalid credentials"
+          "message": "User not found"
         });
         return;
       }
-      console.log("user object : "+ JSON.stringify(user));
-      console.log("user name : "+ user[0].username);
-      console.log("user name : "+ password);
-      console.log("user name : "+ user[0].password);
       // If authentication is success, we will generate a token
       // and dispatch it to the client
       var passwordVerification = (password == user[0].password);
-      console.log("p a s w :"+ passwordVerification);
       if(passwordVerification && user[0].username == username){
         user[0].password = "xxx";
         res.json(genToken(user));    
@@ -40,7 +35,7 @@ var auth = {
         res.status(401);
         res.json({
            "status": 401,
-           "message": "Invalid credentials"
+           "message": "Password verification failed"
         });
       }
     });

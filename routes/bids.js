@@ -47,7 +47,7 @@ var bids = {
             task.bids.push(newBid.id);
             task.save(function(err) {
               if (err) throw err;
-              res.json({"id" : newBid.id});
+              res.json(newBid);
             });            
           });
         }
@@ -77,6 +77,18 @@ var bids = {
       if (err) throw err;
       // we have deleted the review
       res.send({"deleted" : id});
+    });
+  },
+
+  acceptBid : function(req, res){
+    var id = req.params.id;
+    Bid.findById(id,function(err,bid){
+      if(err) throw err;
+      bid.bidstatus = true;
+      bid.save(function(err){
+        if(err) throw err;
+        res.send({"status":"success"});
+      });
     });
   }
 }; 
