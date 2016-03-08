@@ -1,9 +1,10 @@
 var jwt = require('jwt-simple');
- 
+var passwordHash = require('password-hash');
+var User = require('../models/usermodel.js');
+
 var auth = {
  
   login: function(req, res) {
- 
     var username = req.body.username || '';
     var password = req.body.password || '';
    
@@ -11,53 +12,33 @@ var auth = {
       res.status(401);
       res.json({
         "status": 401,
-        "message": "Invalid credentials"
+        "message": "Credentials not found"
       });
       return;
     }
- 
-    // Fire a query to your DB and check if the credentials are valid
-    var dbUserObj = auth.validate(username, password);
-   
-    if (!dbUserObj) { // If authentication fails, we send a 401 back
-      res.status(401);
-      res.json({
-        "status": 401,
-        "message": "Invalid credentials"
-      });
-      return;
-    }
- 
-    if (dbUserObj) {
- 
+    User.find({username : username}).lean().exec(function(err,user){
+      if(user.length == 0){
+        res.status(401);
+        res.json({
+          "status": 401,
+          "message": "User not found"
+        });
+        return;
+      }
       // If authentication is success, we will generate a token
       // and dispatch it to the client
- 
-      res.json(genToken(dbUserObj));
-    }
- 
-  },
- 
-  validate: function(username, password) {
-    // spoofing the DB response for simplicity
-    var dbUserObj = { // spoofing a userobject from the DB. 
-      name: 'arvind',
-      role: 'admin',
-      username: 'arvind@myapp.com'
-    };
- 
-    return dbUserObj;
-  },
- 
-  validateUser: function(username) {
-    // spoofing the DB response for simplicity
-    var dbUserObj = { // spoofing a userobject from the DB. 
-      name: 'arvind',
-      role: 'admin',
-      username: 'arvind@myapp.com'
-    };
- 
-    return dbUserObj;
+      var passwordVerification = (password == user[0].password);
+      if(passwordVerification && user[0].username == username){
+        user[0].password = "xxx";
+        res.json(genToken(user));    
+      }else{
+        res.status(401);
+        res.json({
+           "status": 401,
+           "message": "Password verification failed"
+        });
+      }
+    });
   },
 }
  
@@ -65,9 +46,9 @@ var auth = {
 function genToken(user) {
   var expires = expiresIn(7); // 7 days
   var token = jwt.encode({
-    exp: expires
-  }, require('../config/secret')());
- 
+    exp: expires,
+    username : user[0].username
+  },require('../config/secret')()); 
   return {
     token: token,
     expires: expires,

@@ -3,21 +3,15 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var serverconfig =  require('./config/serverconfig.js');
  
 var app = express();
-var moptions = {
-      "user" : "vizsatiz",
-      "pass" : "Kony@123",
-      "server": {
-        "socketOptions": {
-          "keepAlive": 1
-        }
-      }
-};
-mongoose.connect('mongodb://ds051625.mongolab.com:51625/vizsandboxdb',moptions);
+
+mongoose.connect(serverconfig.mongourl,serverconfig.mongooptions);
  
 app.use(logger('dev'));
 app.use(bodyParser.json());
+
  
 app.all('/*', function(req, res, next) {
   // CORS headers
@@ -39,6 +33,7 @@ app.all('/*', function(req, res, next) {
 // Any URL's that do not follow the below pattern should be avoided unless you 
 // are sure that authentication is not needed
 app.all('/api/v1/*', [require('./middlewares/validateRequest')]);
+app.all('/api/v2/*', [require('./middlewares/validateRequest')]);
  
 app.use('/', require('./routes')); 
 // If no route is matched by now, it must be a 404

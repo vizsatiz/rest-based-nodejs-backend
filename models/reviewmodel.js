@@ -1,32 +1,25 @@
-// grab the things we need
 var mongoose = require('mongoose');
-var passwordHash = require('password-hash');
 var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
+
 
 // create a schema
-var userSchema = new Schema({
-
-  name: String,
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  facebook: String,
-  gmctoken :String,
-  admin: Boolean,
+var reviewSchema = new Schema({
+	
+  reviewer: {type: ObjectId, ref: 'User'},
+  rating: Number,
   created_at: Date,
   updated_at: Date
-
+  
 });
 
 // on every save, add the date
-userSchema.pre('save', function(next) {
+reviewSchema.pre('save', function(next) {
   // get the current date
   var currentDate = new Date();
   
   // change the updated_at field to current date
   this.updated_at = currentDate;
-
-  //hashing password
-  //this.password = passwordHash.generate(this.password);
 
   // if created_at doesn't exist, add to that field
   if (!this.created_at)
@@ -36,7 +29,7 @@ userSchema.pre('save', function(next) {
 
 // the schema is useless so far
 // we need to create a model using it
-var User = mongoose.model('User', userSchema);
+var Review = mongoose.model('Review', reviewSchema);
 
 // make this available to our users in our Node applications
-module.exports = User;
+module.exports = Review;

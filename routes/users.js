@@ -1,51 +1,111 @@
 // if our user.js file is at app/models/user.js
 var User = require('../models/usermodel.js');
-var users = {
- 
+
+var users = { 
+
+  getUserByName : function(req,res){
+    var _username = req.params.username;
+    User.find({username : _username}, function(err, user) {
+      if (err) throw err;
+      res.json(user);
+    });
+  },
+
   getAll: function(req, res) {
     User.find({}, function(err, users) {
       if (err) throw err;
       res.json(users);
     });
-    var allusers = data; // Spoof a DB call
-    //res.json(allusers);
   },
  
   getOne: function(req, res) {
     var id = req.params.id;
-    var user = data[0]; // Spoof a DB call
-    res.json(user);
+    User.findById(id, function(err, users) {
+      if (err) throw err;
+      res.json(users);
+    });
   },
  
   create: function(req, res) {
+    console.log("Request Body : "+ JSON.stringify(req.body));
     var newuser = req.body;
-    data.push(newuser); // Spoof a DB call
-    res.json(newuser);
+    // validate payload
+    if(newuser.name == undefined || newuser.username == undefined || newuser.password == undefined){
+      res.status(302);
+      res.json({
+          "status": 302,
+          "message": "Invalid payload"
+      });
+      return;
+    }
+    //56b455cde508f2ed10f3c222
+    if(!newuser.admin)
+        newuser.admin = false;
+    // create a new user
+    var newUser = User({
+      name: newuser.name,
+      username: newuser.username,
+      password: newuser.password,
+      facebook: newuser.facebook,
+      admin: newuser.admin,
+      gmstoken: null
+    });
+    console.log(JSON.stringify(newuser));
+    // Check whether the user already exists
+    User.find({username : newUser.username},function(err,user){
+      if(user.length != 0){
+        res.status(302);
+        res.json({
+          "status": 302,
+          "message": "Cannot create duplicate user"
+        });
+      }else{
+        // save the user
+        newUser.save(function(err) {
+          if (err) throw err;
+          res.json({"id" : newUser.id });
+        });
+      }  
+    });      
   },
  
   update: function(req, res) {
     var updateuser = req.body;
     var id = req.params.id;
-    data[id] = updateuser // Spoof a DB call
-    res.json(updateuser);
+    User.findById(id, function(err, user) {
+      if (err) throw err;
+      user.name =  updateuser.name;
+      user.username = updateuser.username;
+      user.password = updateuser.password;
+      user.save(function(err) {
+        if (err) throw err;
+        res.send({"updated" : user.id});
+      });
+    });
   },
  
   delete: function(req, res) {
     var id = req.params.id;
-    data.splice(id, 1) // Spoof a DB call
-    res.json(true);
+    // find the user with id 4
+    User.findByIdAndRemove(id, function(err) {
+      if (err) throw err;
+      // we have deleted the user
+      res.send({"deleted" : id});
+    });
+  },
+
+  updateUserWithGCMToken : function(req,res){
+    var userId = req.params.id;
+    var gmc_token = req.body.gmctoken;
+    User.findById(userId, function(err, user){
+      if(err) throw err;
+      user.gmctoken = gmc_token;
+      user.save(function(err) {
+        if (err) throw err;
+        res.send({"updated" : user.id});
+      });
+    })
   }
-};
- 
-var data = [{
-  name: 'user 1',
-  id: '1'
-}, {
-  name: 'user 2',
-  id: '2'
-}, {
-  name: 'user 3',
-  id: '3'
-}];
- 
+  
+}; 
 module.exports = users;
