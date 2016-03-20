@@ -5,6 +5,7 @@ var auth = require('./auth.js');
 var tasks = require('./tasks.js');
 var user = require('./users.js');
 var bids = require('./bids.js');
+var chats = require('./chat.js');
 var config = require('../config/serverconfig.js');
 var basicAuth = require('../middlewares/basicauth.js');
 
@@ -34,6 +35,7 @@ router.delete('/api/v1/task/:id', tasks.delete);
 router.get('/api/v1/bids',bids.getAll);
 router.get('/api/v1/bids/:id',bids.getOne);
 router.post('/api/v1/bids',bids.create);
+router.post('/api/v1/bids/query',bids.getByQuery);
 router.post('/api/v1/bids/:id',bids.acceptBid);
 router.put('/api/v1/bids/:id',bids.update);
 router.delete('/api/v1/bids/:id',bids.delete);
@@ -44,5 +46,8 @@ router.get('/api/v1/admin/users', user.getAll);
 router.get('/api/v1/admin/user/:id', user.getOne);
 router.put('/api/v1/admin/user/:id', user.update);
 router.delete('/api/v1/admin/user/:id', user.delete);
+
+
+router.get('/api/v1/chats/:id',chats.getById);
  
 module.exports = router;

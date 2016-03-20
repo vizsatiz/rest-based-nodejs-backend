@@ -19,6 +19,7 @@ var serversettings = {
       algorithm : "aes-256-ctr",
       key : "d6F3Efeq"
   },
-  gmctoken : "https://gcm-http.googleapis.com/gcm/send"
+  gmctoken : "https://gcm-http.googleapis.com/gcm/send",
+  appid : "satis.tim@hony.com"
 }
 module.exports = serversettings;

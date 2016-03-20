@@ -1,6 +1,7 @@
 // if our user.js file is at app/models/user.js
 var Bid = require('../models/bidmodel.js');
 var Tasks = require('../models/taskmodel.js');
+var Chats = require('../models/chatmodel.js');
 
 var bids = { 
 
@@ -14,6 +15,14 @@ var bids = {
   getOne: function(req, res) {
     var id = req.params.id;
     Bid.findById(id).populate("task").populate("bidder").exec(function(err, bids) {
+      if (err) throw err;
+      res.json(bids);
+    });
+  },
+
+  getByQuery: function(req,res){
+    var query = req.body.query;
+    Bid.find(query, function(err, bids) {
       if (err) throw err;
       res.json(bids);
     });
@@ -32,7 +41,8 @@ var bids = {
     var newBid = Bid({
       task: newbid.task,
       bidder: newbid.bidder,
-      amount:newbid.amount
+      amount:newbid.amount,
+      bidstatus:false
     });
     Tasks.findById(newBid.task, function(err, task) {
         if(err){
@@ -82,12 +92,24 @@ var bids = {
 
   acceptBid : function(req, res){
     var id = req.params.id;
+    var body = req.body;
     Bid.findById(id,function(err,bid){
       if(err) throw err;
-      bid.bidstatus = true;
-      bid.save(function(err){
-        if(err) throw err;
-        res.send({"status":"success"});
+      bid.bidstatus = true;    
+      var newchatObject = Chats({
+        accepter: body.accepter,
+        chatter: body.chatter,
+        chats:[],
+        task: body.task
+      });
+      // save the user
+      newchatObject.save(function(err) {
+        if (err) throw err;
+          bid.save(function(err){
+          if(err) throw err;
+          // creating chat object
+          res.send({"status":"success"});
+       });
       });
     });
   }
