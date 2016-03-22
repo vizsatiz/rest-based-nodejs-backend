@@ -53,7 +53,7 @@ var chat = {
   },
 
   removeChatObject = function(req,res){
-
+  		//
   }
 }
 module.exports = chat;	 
