@@ -53,7 +53,12 @@ var chat = {
   },
 
   removeChatObject = function(req,res){
-  		//
+  	var chatId = res.params.id;
+  	Chats.findByIdAndRemove(chatId, function(err) {
+      if (err) throw err;
+      // we have deleted the task
+      res.send({"deleted" : id});
+    });
   }
 }
 module.exports = chat;	 
